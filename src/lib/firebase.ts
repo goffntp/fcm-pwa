@@ -29,7 +29,21 @@ export const getMessagingIfSupported = async () => {
 
 const registerSW = async () => {
   if (!("serviceWorker" in navigator)) return null;
-  return navigator.serviceWorker.register("/firebase-messaging-sw.js");
+  
+  const registration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+  
+  // รอให้ service worker active
+  if (registration.installing) {
+    await new Promise((resolve) => {
+      registration.installing!.addEventListener('statechange', () => {
+        if (registration.installing!.state === 'activated') {
+          resolve(void 0);
+        }
+      });
+    });
+  }
+  
+  return registration;
 };
 
 export const subscribeAndGetToken = async (): Promise<string | null> => {

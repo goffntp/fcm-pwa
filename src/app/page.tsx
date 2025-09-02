@@ -106,16 +106,28 @@ export default function Page() {
         </div>
       )}
 
-      <div className="w-full max-w-2xl text-xs border rounded p-3">
-        <div className="font-medium mb-1">Logs</div>
-        <ul className="space-y-1">
-          {logs.map((item, idx) => (
-            <li key={idx}>
-              <span className="opacity-60">{item.ts} — </span>
-              <span className="font-mono">{item.text}</span>
-            </li>
-          ))}
-        </ul>
+      <div className="w-full max-w-4xl text-sm border rounded p-4 bg-gray-50 max-h-96 overflow-y-auto">
+        <div className="font-medium mb-2 text-lg">Debug Logs</div>
+        <div className="space-y-2">
+          {logs.length === 0 ? (
+            <div className="text-gray-500 italic">No logs yet...</div>
+          ) : (
+            logs.map((item, idx) => (
+              <div key={idx} className="border-b pb-2 last:border-b-0">
+                <div className="text-xs text-gray-500 mb-1">{item.ts}</div>
+                <div className="font-mono text-sm break-all bg-white p-2 rounded border">
+                  {item.text}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+        <button 
+          onClick={() => setLogs([])}
+          className="mt-3 px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600"
+        >
+          Clear Logs
+        </button>
       </div>
     </main>
   );

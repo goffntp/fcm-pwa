@@ -65,23 +65,65 @@ export default function Page() {
       <Button onClick={handleSubscribe}>🔔 Subscribe Notification</Button>
       <Button 
         onClick={async () => {
-          if (Notification.permission === 'granted') {
-            // ใช้ Service Worker แสดง notification ใน Android
+          try {
+            setLogs((l) => [{
+              ts: new Date().toLocaleTimeString(),
+              text: `Starting notification test... Permission: ${Notification.permission}`,
+            }, ...l]);
+            
+            if (Notification.permission !== 'granted') {
+              setLogs((l) => [{
+                ts: new Date().toLocaleTimeString(),
+                text: 'ERROR: Notification permission not granted',
+              }, ...l]);
+              return;
+            }
+            
             if ('serviceWorker' in navigator) {
+              setLogs((l) => [{
+                ts: new Date().toLocaleTimeString(),
+                text: 'Service Worker supported, getting registration...',
+              }, ...l]);
+              
               const registration = await navigator.serviceWorker.ready;
-              registration.showNotification('ทดสอบ Local SW', {
+              setLogs((l) => [{
+                ts: new Date().toLocaleTimeString(),
+                text: `SW Registration ready: ${registration.scope}`,
+              }, ...l]);
+              
+              await registration.showNotification('ทดสอบ Local SW', {
                 body: 'Service Worker Notification ใน Android',
                 icon: '/icons/icon-192.png',
-                badge: '/icons/icon-192.png'
+                badge: '/icons/icon-192.png',
+                tag: 'test-notification',
+                requireInteraction: true
               });
+              
+              setLogs((l) => [{
+                ts: new Date().toLocaleTimeString(),
+                text: 'SW Notification sent successfully!',
+              }, ...l]);
             } else {
+              setLogs((l) => [{
+                ts: new Date().toLocaleTimeString(),
+                text: 'Service Worker not supported, using Notification API',
+              }, ...l]);
+              
               new Notification('ทดสอบ Local', {
                 body: 'Notification API ทำงาน',
                 icon: '/icons/icon-192.png'
               });
+              
+              setLogs((l) => [{
+                ts: new Date().toLocaleTimeString(),
+                text: 'Notification API called successfully!',
+              }, ...l]);
             }
-          } else {
-            alert('Notification permission not granted');
+          } catch (error) {
+            setLogs((l) => [{
+              ts: new Date().toLocaleTimeString(),
+              text: `ERROR: ${error instanceof Error ? error.message : String(error)}`,
+            }, ...l]);
           }
         }}
         className="bg-green-600 hover:bg-green-700"

@@ -16,14 +16,25 @@ const firebaseConfig = {
   appId: "1:100477729239:web:c33aab9e5a2393443f7392",
 };
 
+console.log('[SW] Firebase messaging service worker loaded');
+
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
+
+console.log('[SW] Firebase messaging initialized');
 
 // รับโนติฯ ตอน background/ปิดเบราว์เซอร์
 messaging.onBackgroundMessage((payload) => {
   console.log('[SW] Background message received:', payload);
   const { title, body, icon, image } = payload.notification || {};
-  self.registration.showNotification(title || "Notification", {
+  
+  // ทดสอบแสดง notification ธรรมดา
+  self.registration.showNotification('Test from SW', {
+    body: 'Service Worker ทำงาน',
+    icon: '/icons/icon-192.png'
+  });
+  
+  self.registration.showNotification(title || "FCM Notification", {
     body: body || "",
     icon: icon || "/icons/icon-192.png",
     image: image,

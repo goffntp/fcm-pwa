@@ -62,6 +62,17 @@ export default function Page() {
     <main className="min-h-dvh flex flex-col items-center justify-center gap-4 p-6">
       <h1 className="text-2xl font-semibold">Android Web Push (FCM)</h1>
       <Button onClick={handleSubscribe}>🔔 Subscribe Notification</Button>
+      <Button 
+        onClick={() => {
+          new Notification("ทดสอบ Local", {
+            body: "Notification API ทำงานหรือไม่",
+            icon: "/icons/icon-192.png"
+          });
+        }}
+        className="bg-green-600 hover:bg-green-700"
+      >
+        🧪 Test Local Notification
+      </Button>
 
       {token && (
         <div className="w-full max-w-2xl text-xs break-all border rounded p-3">

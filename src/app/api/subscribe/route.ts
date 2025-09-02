@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
 
 export async function POST(req: Request) {
   const { token } = await req.json();
@@ -23,7 +24,6 @@ export async function POST(req: Request) {
     };
     
     // สร้าง JWT token สำหรับ Google Auth
-    const jwt = require('jsonwebtoken');
     const now = Math.floor(Date.now() / 1000);
     
     const payload = {
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
       iat: now,
     };
     
-    const assertion = jwt.sign(payload, serviceAccount.private_key, { algorithm: 'RS256' });
+    const assertion = jwt.sign(payload, serviceAccount.private_key!, { algorithm: 'RS256' });
     
     // ขอ access token
     const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {

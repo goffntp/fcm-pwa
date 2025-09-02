@@ -1,0 +1,36 @@
+# Vercel Deployment Guide
+
+## 1. เตรียม Environment Variables
+
+ใน Vercel Dashboard → Settings → Environment Variables เพิ่ม:
+
+### Public Variables (เหมือนเดิม)
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyCy5-6upXqbtk5SK1tF4euPz8InHZtQhvg
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=sg-secom-notify.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=sg-secom-notify
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=sg-secom-notify.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=100477729239
+NEXT_PUBLIC_FIREBASE_APP_ID=1:100477729239:web:c33aab9e5a2393443f7392
+NEXT_PUBLIC_FIREBASE_VAPID_KEY=BB8SWf7tbSac96Q_jQsQi_HPeKsMreJ5nX49ijX-KbwfH3srse33F1T2BzsFztIEvAmN4afCjMJ-Kj9tYFx8W7E
+```
+
+### Private Variables (จาก firebase-service-account.json)
+```
+FIREBASE_PROJECT_ID=sg-secom-notify
+FIREBASE_PRIVATE_KEY_ID=66e1dfad05869f92a1830504c2e0b5ed58b9e5c7
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC0f9DqYX/rJ/EI\nuUx2hLnFRP6zeBhVIy5JIKFQ0V7U+lsduRIVIibIoX43wgXLuK8EVESUzn65CIjK\nMnkPqDyqH4kUjQdFUv9pJIKRU4884vUGMaDYEZgDdKi15ONYFrRkCAaI4g5YVq/4\nECnF+25UeVnpsEAMV2n9JoqlX/ZkKs7iFjL41yacfJJ+YzFFaaLxQQW5VYoCuC1j\n8O/3VWRBNoRfLpNdLlfiiWjaXrb166d6n02dWIiu+8PZxJ5s4wusFmNaLpAof3+l\nQE0fxXPWAlDqqBzjMcv1xmJzRcFsZ9t4ToQP5+2VRyayB1q2jsnwMWSfOXiIIEfD\nDQ5UdmLRAgMBAAECggEAKMe29PldzAycX8bzsFRI33m43OXtg3C9IJ77a1W+afp9\nUxAQ9o7eedZIvMK8ifw6KI18aC1mQppbw2kXYnL1b89LqoW5Zo97rq7lw/0/v7cc\nOk/EogSJloBJLL1fovOQQohwp4UBTjKZs789HOKzWOkI6CwesFsgkmYejYIKmjMT\nFEKVu3nKuGmoxcb+h/+PLcKPiHN0O2YtQ6+n8OCAW/ds16SIQYu6ndQ7ouCr+jcb\n3US2TzwCDlHBNAOMbh0j0MhLOzf+vjOFI7jhTUrPcMVz0OZM3aMTeSwJEYmwciEJ\nYETPKDFpPoUcwbYZu2wIEUfWXfTImIeqQEl6BjNEVQKBgQDvXnYcZEYr2lc58O4k\n3CVPX9uTaKJ7Vz2mxDQqqYSqXvgWgOb9+jy3m1GHrtZa4gfds+ulddyFFBczv2E0\nsfCzLPCClN8cfalgwFCi2MEwFr3WOphQ0EWyoKSTPGsaqlqPA99BN5vUzFp+aHft\nMPAuAJJOCjdrUAn4qegojvXidQKBgQDBCkSj65RGKrxmediumVaq3YWQsUl2n/3K\n+/68fF0e5dBDrBuggJLnOoawi8XuBh4GtMjIfZ1i4rqyOkzcJPs+CEFjuZAHR+tM\nc7dU3V9BOc3Bc5gkJbMW67N6KpiFCcTLoEpS1VBLfvMpfEtQFhpFlllld/Ryw1X8\nP4kgpcQ7bQKBgC4Qe6JTGb3ussKPvwSQ6Q0xYUwo4rvhuheRwohDPyiaRhvuioVt\n1qlu1m3KE65BuUnNChg5akqh5yUqO0asx6lziIVYqOcOt73KxLnSBLuAZOAJPq6u\npfsONx2ujt3+0pabJCekz/RPr0qMSCf5Nv9jVMR36tpX+NNFv0uu11rRAoGBAIv/\nT2J2EjWE/tdu3Jdbe4A1YY1bFcUjKOMSOF8n7jzfPFgntG2FcYSibFYTODt0UkhY\nyhilCQRTHETvhRhO9aq6P/n79JljLiFm9nlkhpV+P1th4t+sO6KO073wsGYjfIaU\nu/Iw46es7NqUWuY88VawQCsXgL/OLEjhJyj3L0ZNAoGAcv1crSGFm/ag+wCcQ2Ug\n71vAcZk4OpGItEYN3auDKjCD5MuosG/n7WKI9AGOK+ZAbGU4vfifNTZ7TTpMId1U\nH9ccTv652APTUZBmWZhlECz07r7B1TJ8uTg/A7pe7NmUWOkKej5G5WYB0JCEXkFU\nai9OYwss6H6UcvGv/pb5akQ=\n-----END PRIVATE KEY-----\n"
+FIREBASE_CLIENT_EMAIL=firebase-adminsdk-fbsvc@sg-secom-notify.iam.gserviceaccount.com
+FIREBASE_CLIENT_ID=117559652837727511262
+```
+
+## 2. Deploy
+```bash
+vercel --prod
+```
+
+## 3. Security Features
+- ✅ Service Account ไม่อยู่ใน code
+- ✅ Private keys ใน environment variables
+- ✅ .gitignore ป้องกันไฟล์ sensitive
+- ✅ Firebase config ดึงจาก API แทนฝังใน service worker

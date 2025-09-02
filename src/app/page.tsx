@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { onForegroundMessage, subscribeAndGetToken } from "@/lib/firebase";
+import { isSupported } from "firebase/messaging";
 
 type LogItem = { ts: string; text: string };
 
@@ -72,6 +73,24 @@ export default function Page() {
         className="bg-green-600 hover:bg-green-700"
       >
         🧪 Test Local Notification
+      </Button>
+      <Button 
+        onClick={async () => {
+          const supported = await isSupported();
+          const permission = Notification.permission;
+          const userAgent = navigator.userAgent;
+          
+          setLogs((l) => [
+            {
+              ts: new Date().toLocaleTimeString(),
+              text: `FCM Supported: ${supported}, Permission: ${permission}, UA: ${userAgent.substring(0, 50)}...`,
+            },
+            ...l,
+          ]);
+        }}
+        className="bg-blue-600 hover:bg-blue-700"
+      >
+        🔍 Check FCM Support
       </Button>
 
       {token && (

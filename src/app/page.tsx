@@ -66,7 +66,13 @@ export default function Page() {
       {token && (
         <div className="w-full max-w-2xl text-xs break-all border rounded p-3">
           <div className="font-medium mb-1">FCM Token</div>
-          <div>{token}</div>
+          <div className="mb-2">{token}</div>
+          <button 
+            className="text-blue-500 underline text-sm"
+            onClick={() => navigator.clipboard.writeText(token)}
+          >
+            Copy Token
+          </button>
         </div>
       )}
 

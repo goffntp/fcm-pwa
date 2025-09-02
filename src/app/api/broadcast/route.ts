@@ -1,9 +1,5 @@
 import { NextResponse } from "next/server";
 import { GoogleAuth } from "google-auth-library";
-import { promises as fs } from "fs";
-import path from "path";
-
-const TOKENS_FILE = path.join(process.cwd(), "fcm-tokens.json");
 
 export async function POST(req: Request) {
   const { title, body, data } = await req.json();
@@ -16,21 +12,6 @@ export async function POST(req: Request) {
   }
 
   try {
-    // อ่าน tokens จากไฟล์
-    let tokens: string[] = [];
-    try {
-      const tokensData = await fs.readFile(TOKENS_FILE, "utf8");
-      tokens = JSON.parse(tokensData);
-      console.log("[BROADCAST] Found tokens:", tokens.length);
-    } catch {
-      console.log("[BROADCAST] No tokens file found");
-      return NextResponse.json({ error: "ไม่มี FCM tokens" }, { status: 400 });
-    }
-    
-    if (tokens.length === 0) {
-      return NextResponse.json({ error: "ไม่มี FCM tokens" }, { status: 400 });
-    }
-
     console.log("[BROADCAST] Creating Google Auth...");
     const auth = new GoogleAuth({
       credentials: {
@@ -46,38 +27,35 @@ export async function POST(req: Request) {
     const accessToken = await auth.getAccessToken();
     console.log("[BROADCAST] Access token obtained, length:", accessToken?.length);
 
-    // ส่งไปยังแต่ละ token
-    const results = [];
-    for (const token of tokens) {
-      const payload = {
-        message: {
-          notification: { title, body },
-          data: data || {},
-          token
-        }
-      };
+    const payload = {
+      message: {
+        notification: { title, body },
+        data: data || {},
+        topic: "Alluser"
+      }
+    };
+    console.log("[BROADCAST] FCM payload:", JSON.stringify(payload, null, 2));
 
-      const response = await fetch(
-        `https://fcm.googleapis.com/v1/projects/sg-secom-notify/messages:send`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+    const response = await fetch(
+      `https://fcm.googleapis.com/v1/projects/sg-secom-notify/messages:send`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
 
-      const result = await response.json();
-      results.push({ token: token.substring(0, 20) + "...", success: response.ok, result });
-      console.log("[BROADCAST] Sent to token:", token.substring(0, 20) + "...", "Success:", response.ok);
-    }
+    console.log("[BROADCAST] FCM response status:", response.status);
+    const result = await response.json();
+    console.log("[BROADCAST] FCM response:", result);
     
     return NextResponse.json({ 
-      success: true, 
-      totalTokens: tokens.length,
-      results
+      success: response.ok, 
+      status: response.status,
+      result 
     });
     
   } catch (error) {

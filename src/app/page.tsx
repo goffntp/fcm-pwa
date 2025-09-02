@@ -64,11 +64,25 @@ export default function Page() {
       <h1 className="text-2xl font-semibold">Android Web Push (FCM)</h1>
       <Button onClick={handleSubscribe}>🔔 Subscribe Notification</Button>
       <Button 
-        onClick={() => {
-          new Notification("ทดสอบ Local", {
-            body: "Notification API ทำงานหรือไม่",
-            icon: "/icons/icon-192.png"
-          });
+        onClick={async () => {
+          if (Notification.permission === 'granted') {
+            // ใช้ Service Worker แสดง notification ใน Android
+            if ('serviceWorker' in navigator) {
+              const registration = await navigator.serviceWorker.ready;
+              registration.showNotification('ทดสอบ Local SW', {
+                body: 'Service Worker Notification ใน Android',
+                icon: '/icons/icon-192.png',
+                badge: '/icons/icon-192.png'
+              });
+            } else {
+              new Notification('ทดสอบ Local', {
+                body: 'Notification API ทำงาน',
+                icon: '/icons/icon-192.png'
+              });
+            }
+          } else {
+            alert('Notification permission not granted');
+          }
         }}
         className="bg-green-600 hover:bg-green-700"
       >

@@ -92,6 +92,37 @@ export default function Page() {
       >
         🔍 Check FCM Support
       </Button>
+      <Button 
+        onClick={async () => {
+          if ('serviceWorker' in navigator) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            const swStatus = registrations.map(reg => ({
+              scope: reg.scope,
+              state: reg.active?.state || 'inactive',
+              scriptURL: reg.active?.scriptURL || 'none'
+            }));
+            
+            setLogs((l) => [
+              {
+                ts: new Date().toLocaleTimeString(),
+                text: `Service Workers: ${JSON.stringify(swStatus, null, 2)}`,
+              },
+              ...l,
+            ]);
+          } else {
+            setLogs((l) => [
+              {
+                ts: new Date().toLocaleTimeString(),
+                text: 'Service Worker not supported in this browser',
+              },
+              ...l,
+            ]);
+          }
+        }}
+        className="bg-purple-600 hover:bg-purple-700"
+      >
+        ⚙️ Check Service Worker
+      </Button>
 
       {token && (
         <div className="w-full max-w-2xl text-xs break-all border rounded p-3">

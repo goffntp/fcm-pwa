@@ -48,18 +48,7 @@ export const subscribeAndGetToken = async (): Promise<string | null> => {
     serviceWorkerRegistration: swReg,
   });
   
-  // Subscribe to topic client-side
-  if (token && messaging) {
-    try {
-      // Import Firebase functions dynamically
-      const { getFunctions, httpsCallable } = await import("firebase/functions");
-      const functions = getFunctions();
-      const subscribeToTopic = httpsCallable(functions, 'subscribeToTopic');
-      await subscribeToTopic({ token, topic: 'Alluser' });
-    } catch {
-      console.log("Topic subscription handled server-side");
-    }
-  }
+  // Token จะถูกส่งไป server ใน handleSubscribe
   
   return token || null;
 };

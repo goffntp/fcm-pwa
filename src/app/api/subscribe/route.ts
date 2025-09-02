@@ -27,28 +27,35 @@ export async function POST(req: Request) {
     const accessToken = await auth.getAccessToken();
     console.log("[SUBSCRIBE] Access token obtained");
     
-    // Subscribe ไป topic "Alluser" ผ่าน FCM REST API
+    // Subscribe ไป topic "Alluser" ผ่าน IID API
     const response = await fetch(
-      `https://fcm.googleapis.com/v1/projects/sg-secom-notify/subscriptions`,
+      `https://iid.googleapis.com/iid/v1/${token}/rel/topics/Alluser`,
       {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          topic: "Alluser",
-          tokens: [token]
-        }),
       }
     );
     
-    const result = await response.json();
-    console.log("[SUBSCRIBE] Topic subscription result:", result);
+    let result = null;
+    const responseText = await response.text();
+    
+    if (responseText) {
+      try {
+        result = JSON.parse(responseText);
+      } catch {
+        result = { message: responseText };
+      }
+    }
+    
+    console.log("[SUBSCRIBE] Topic subscription result:", { status: response.status, result });
     
     return NextResponse.json({ 
       success: response.ok, 
       message: response.ok ? "Subscribed to Alluser topic" : "Subscription failed",
+      status: response.status,
       result
     });
     
